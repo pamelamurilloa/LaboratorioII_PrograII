@@ -12,11 +12,13 @@ import javax.swing.JComboBox;
 public class InsertPlayers extends javax.swing.JFrame {
 
     private PlayerManager playerMan = new PlayerManager();
+    
     public InsertPlayers() {
         initComponents();
         setLocationRelativeTo(null);
         setResizable(false);
-        initialConfig();
+        fillComboBox (cbTeams, playerMan.getTeams() );
+        btnAdd.setOpaque(true);
         
         restart();
     }
@@ -29,16 +31,10 @@ public class InsertPlayers extends javax.swing.JFrame {
         }
     }
     
-    public void fillComboBoxes(JComboBox comboToFill, ArrayList<String> filling) {
+    public void fillComboBox(JComboBox comboToFill, ArrayList<String> filling) {
         for (int item = 0; filling.size() > item; item++) {
             comboToFill.addItem(filling.get(item).toString());
         }
-    }
-    
-    public void initialConfig() {
-        fillComboBoxes (cbTeams, playerMan.getTeams() );
-        fillComboBoxes (cbProfile, playerMan.getProfile() );
-        fillComboBoxes (cbFortitude, playerMan.getFortitude() );
     }
     
     
@@ -46,6 +42,7 @@ public class InsertPlayers extends javax.swing.JFrame {
         inputID.setText("");
         inputName.setText("");
         inputAge.setText("");
+        lblSuccess.setVisible(false);
         radioBtnState.setSelected(false);
          
         Date date = playerMan.restartDate();
@@ -58,23 +55,24 @@ public class InsertPlayers extends javax.swing.JFrame {
         int playerAge = isInteger( inputAge.getText() );
         String name = inputName.getText();
         boolean state = radioBtnState.isSelected();
-        int team = cbTeams.getSelectedIndex();
+        int team = (cbTeams.getSelectedIndex() + 1);
         String profile = cbProfile.getSelectedItem().toString();
         String fortitude = cbFortitude.getSelectedItem().toString();
         
         Date inputDate = dateDebutDate.getDate();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = playerMan.restartDate();
         try {
-            date = format.parse(inputDate.toString());
+            date = dateFormat.parse(dateFormat.format(inputDate));
         } catch (ParseException ex) {
             Logger.getLogger(InsertPlayers.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         if (playerID > -1 && playerAge > -1 && !name.equals("")) {
             playerMan.insertPlayerInDB(playerID, name, playerAge, state, team, profile, fortitude, date);
-            
-        }
+            lblSuccess.setVisible(true);
+
+        } 
     }
     
     /**
@@ -89,7 +87,7 @@ public class InsertPlayers extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        lblSuccess = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -107,6 +105,7 @@ public class InsertPlayers extends javax.swing.JFrame {
         btnAdd = new javax.swing.JButton();
         cbTeams = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -135,11 +134,11 @@ public class InsertPlayers extends javax.swing.JFrame {
         jLabel4.setText("Bienvenido al registro de jugadores");
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 900, -1));
 
-        jLabel5.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(20, 20, 20));
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel5.setText("Cédula:");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 210, 140, -1));
+        lblSuccess.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
+        lblSuccess.setForeground(new java.awt.Color(20, 20, 20));
+        lblSuccess.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblSuccess.setText("Jugador insertado exitosamente");
+        jPanel1.add(lblSuccess, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 400, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(20, 20, 20));
@@ -204,7 +203,9 @@ public class InsertPlayers extends javax.swing.JFrame {
         cbFortitude.setBackground(new java.awt.Color(204, 204, 204));
         cbFortitude.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
         cbFortitude.setForeground(new java.awt.Color(0, 0, 0));
-        jPanel1.add(cbFortitude, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 250, 180, -1));
+        cbFortitude.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "cabeceo", "velocidad", "marca" }));
+        cbFortitude.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel1.add(cbFortitude, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 250, 180, 40));
 
         jLabel11.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(20, 20, 20));
@@ -215,7 +216,9 @@ public class InsertPlayers extends javax.swing.JFrame {
         cbProfile.setBackground(new java.awt.Color(204, 204, 204));
         cbProfile.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
         cbProfile.setForeground(new java.awt.Color(0, 0, 0));
-        jPanel1.add(cbProfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 200, 180, -1));
+        cbProfile.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "derecho", "izquierdo" }));
+        cbProfile.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel1.add(cbProfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 200, 180, 40));
 
         jLabel12.setFont(new java.awt.Font("Hiragino Maru Gothic ProN", 1, 22)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(20, 20, 20));
@@ -233,6 +236,7 @@ public class InsertPlayers extends javax.swing.JFrame {
         btnAdd.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
         btnAdd.setForeground(new java.awt.Color(0, 0, 0));
         btnAdd.setText("Añadir");
+        btnAdd.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
@@ -243,13 +247,20 @@ public class InsertPlayers extends javax.swing.JFrame {
         cbTeams.setBackground(new java.awt.Color(204, 204, 204));
         cbTeams.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
         cbTeams.setForeground(new java.awt.Color(0, 0, 0));
-        jPanel1.add(cbTeams, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 400, 180, -1));
+        cbTeams.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel1.add(cbTeams, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 404, 180, 40));
 
         jLabel10.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(20, 20, 20));
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel10.setText("Equipos");
         jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 410, 140, -1));
+
+        jLabel14.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(20, 20, 20));
+        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel14.setText("Cédula:");
+        jPanel1.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 210, 140, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 900, 560));
 
@@ -388,9 +399,9 @@ public class InsertPlayers extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -399,6 +410,7 @@ public class InsertPlayers extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel lblSuccess;
     private javax.swing.JMenu menuInsert;
     private javax.swing.JMenuItem menuReport1;
     private javax.swing.JMenuItem menuReport2;

@@ -1,19 +1,39 @@
 package Presentation;
 
+import Bussiness.PlayerManager;
+import java.util.HashMap;
 import javax.swing.JFrame;
+import javax.swing.table.DefaultTableModel;
 
 
 public class Report1 extends javax.swing.JDialog {
 
-    /**
-     * Creates new form Reports
-     */
+    private PlayerManager playerMan = new PlayerManager();
+    
     public Report1(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
+        setResizable(false);
+        
+        fillTable();
         
     }
-
+    
+    
+    public void fillTable() {
+        DefaultTableModel model = (DefaultTableModel) tbData.getModel();
+        model.setRowCount(0);
+        HashMap<Integer, HashMap> reporte = playerMan.report1();
+        Object[] fill = new Object[4];
+        for (Object key : reporte.keySet() ) {
+            fill[0] = key;
+            fill[1] = reporte.get(key).get("Name");
+            fill[2] = reporte.get(key).get("Team");
+            fill[3] = reporte.get(key).get("Profile");
+            model.addRow(fill);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -26,7 +46,7 @@ public class Report1 extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbData = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -46,10 +66,10 @@ public class Report1 extends javax.swing.JDialog {
         lblTitle.setFont(new java.awt.Font("Hiragino Sans", 1, 36)); // NOI18N
         lblTitle.setForeground(new java.awt.Color(20, 20, 20));
         lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblTitle.setText("Bienvenido al registro de jugadores");
+        lblTitle.setText("Bienvenido al reporte 1");
         jPanel1.add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 900, -1));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbData.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -57,12 +77,28 @@ public class Report1 extends javax.swing.JDialog {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Cédula", "Nombre", "Equipo", "Perfil"
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 90, 630, -1));
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tbData.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tbData);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 117, 630, 400));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 900, 560));
 
@@ -118,7 +154,9 @@ public class Report1 extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void menuInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuInsertActionPerformed
-        remove(this);
+        InsertPlayers newWindow = new InsertPlayers();
+        newWindow.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_menuInsertActionPerformed
 
     private void menuReport1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport1ActionPerformed
@@ -128,11 +166,13 @@ public class Report1 extends javax.swing.JDialog {
     private void menuReport2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport2ActionPerformed
         Report2 newWindow = new Report2(new JFrame(), true);
         newWindow.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_menuReport2ActionPerformed
 
     private void menuReport3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport3ActionPerformed
         Report3 newWindow = new Report3(new JFrame(), true);
         newWindow.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_menuReport3ActionPerformed
 
     /**
@@ -185,11 +225,11 @@ public class Report1 extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JMenu menuInsert;
     private javax.swing.JMenuItem menuReport1;
     private javax.swing.JMenuItem menuReport2;
     private javax.swing.JMenuItem menuReport3;
+    private javax.swing.JTable tbData;
     // End of variables declaration//GEN-END:variables
 }

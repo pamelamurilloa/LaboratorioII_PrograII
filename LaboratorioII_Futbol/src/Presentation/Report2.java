@@ -1,18 +1,45 @@
 package Presentation;
 
+import Bussiness.PlayerManager;
+import java.util.Date;
+import java.util.HashMap;
 import javax.swing.JFrame;
+import javax.swing.table.DefaultTableModel;
 
 
 public class Report2 extends javax.swing.JDialog {
 
-    /**
-     * Creates new form Report2
-     */
+    private PlayerManager playerMan = new PlayerManager();
+    
     public Report2(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
+        setResizable(false);
+        
+        btnConfirm.setOpaque(true);
     }
 
+    public void restart() {
+        Date date = playerMan.restartDate();
+        dateInitialDate.setDate(date);
+        dateFinalDate.setDate(date);
+    }
+    
+    
+    public void fillTable() {
+        DefaultTableModel model = (DefaultTableModel) tbData.getModel();
+        model.setRowCount(0);
+        HashMap<Integer, HashMap> reporte = playerMan.report2(dateInitialDate.getDate(), dateFinalDate.getDate());
+        Object[] fill = new Object[3];
+        for (Object key : reporte.keySet() ) {
+            fill[0] = reporte.get(key).get("Name");
+            fill[1] = reporte.get(key).get("Team");
+            fill[2] = reporte.get(key).get("Debut");
+            model.addRow(fill);
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -25,7 +52,12 @@ public class Report2 extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbData = new javax.swing.JTable();
+        dateInitialDate = new com.toedter.calendar.JDateChooser();
+        jLabel2 = new javax.swing.JLabel();
+        dateFinalDate = new com.toedter.calendar.JDateChooser();
+        jLabel3 = new javax.swing.JLabel();
+        btnConfirm = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -45,23 +77,70 @@ public class Report2 extends javax.swing.JDialog {
         lblTitle.setFont(new java.awt.Font("Hiragino Sans", 1, 36)); // NOI18N
         lblTitle.setForeground(new java.awt.Color(20, 20, 20));
         lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblTitle.setText("Bienvenido al registro de jugadores");
+        lblTitle.setText("Bienvenido al reporte 2");
         jPanel1.add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 900, -1));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbData.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Nombre", "Equipo", "Fecha Debut"
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 90, 630, -1));
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tbData.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tbData);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 220, 630, 320));
+
+        dateInitialDate.setBackground(new java.awt.Color(204, 204, 204));
+        dateInitialDate.setForeground(new java.awt.Color(0, 0, 0));
+        jPanel1.add(dateInitialDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 100, 180, 40));
+
+        jLabel2.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(20, 20, 20));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel2.setText("Fecha inicio");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 110, 150, -1));
+
+        dateFinalDate.setBackground(new java.awt.Color(204, 204, 204));
+        dateFinalDate.setForeground(new java.awt.Color(0, 0, 0));
+        jPanel1.add(dateFinalDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 150, 180, 40));
+
+        jLabel3.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(20, 20, 20));
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel3.setText("Fecha final");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 160, 150, -1));
+
+        btnConfirm.setBackground(new java.awt.Color(0, 153, 153));
+        btnConfirm.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
+        btnConfirm.setForeground(new java.awt.Color(0, 0, 0));
+        btnConfirm.setText("Confirmar");
+        btnConfirm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnConfirm, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 120, 180, 40));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 900, 560));
 
@@ -117,22 +196,30 @@ public class Report2 extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void menuInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuInsertActionPerformed
-        remove(this);
+        InsertPlayers newWindow = new InsertPlayers();
+        newWindow.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_menuInsertActionPerformed
 
-    private void menuReport1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport1ActionPerformed
-        Report1 newWindow = new Report1(new JFrame(), true);
+    private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
+        fillTable();
+    }//GEN-LAST:event_btnConfirmActionPerformed
+
+    private void menuReport3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport3ActionPerformed
+        Report3 newWindow = new Report3(new JFrame(), true);
         newWindow.setVisible(true);
-    }//GEN-LAST:event_menuReport1ActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_menuReport3ActionPerformed
 
     private void menuReport2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport2ActionPerformed
 
     }//GEN-LAST:event_menuReport2ActionPerformed
 
-    private void menuReport3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport3ActionPerformed
-        Report3 newWindow = new Report3(new JFrame(), true);
+    private void menuReport1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport1ActionPerformed
+        Report1 newWindow = new Report1(new JFrame(), true);
         newWindow.setVisible(true);
-    }//GEN-LAST:event_menuReport3ActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_menuReport1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -177,17 +264,22 @@ public class Report2 extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnConfirm;
+    private com.toedter.calendar.JDateChooser dateFinalDate;
+    private com.toedter.calendar.JDateChooser dateInitialDate;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JMenu menuInsert;
     private javax.swing.JMenuItem menuReport1;
     private javax.swing.JMenuItem menuReport2;
     private javax.swing.JMenuItem menuReport3;
+    private javax.swing.JTable tbData;
     // End of variables declaration//GEN-END:variables
 }

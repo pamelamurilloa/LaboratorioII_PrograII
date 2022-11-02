@@ -16,6 +16,7 @@ public class Report3 extends javax.swing.JDialog {
         initComponents();
         setLocationRelativeTo(null);
         setResizable(false);
+        btnConfirm.setOpaque(true);
         
         fillComboBox();
     }
@@ -65,7 +66,7 @@ public class Report3 extends javax.swing.JDialog {
         tbData = new javax.swing.JTable();
         cbTeams = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
-        btnAdd = new javax.swing.JButton();
+        btnConfirm = new javax.swing.JButton();
         inputUpperAge = new javax.swing.JTextField();
         inputLowerAge = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
@@ -116,11 +117,19 @@ public class Report3 extends javax.swing.JDialog {
             Class[] types = new Class [] {
                 java.lang.String.class, java.lang.Integer.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
+        tbData.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tbData);
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 220, 630, 320));
@@ -136,16 +145,16 @@ public class Report3 extends javax.swing.JDialog {
         jLabel10.setText("Equipos");
         jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 160, 90, -1));
 
-        btnAdd.setBackground(new java.awt.Color(0, 153, 153));
-        btnAdd.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
-        btnAdd.setForeground(new java.awt.Color(0, 0, 0));
-        btnAdd.setText("Confirmar");
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+        btnConfirm.setBackground(new java.awt.Color(0, 153, 153));
+        btnConfirm.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
+        btnConfirm.setForeground(new java.awt.Color(0, 0, 0));
+        btnConfirm.setText("Confirmar");
+        btnConfirm.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
+                btnConfirmActionPerformed(evt);
             }
         });
-        jPanel1.add(btnAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 160, 180, 40));
+        jPanel1.add(btnConfirm, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 160, 180, 40));
 
         inputUpperAge.setBackground(new java.awt.Color(204, 204, 204));
         inputUpperAge.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
@@ -219,30 +228,16 @@ public class Report3 extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void menuInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuInsertActionPerformed
-        remove(this);
+        InsertPlayers newWindow = new InsertPlayers();
+        newWindow.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_menuInsertActionPerformed
 
-    private void menuReport1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport1ActionPerformed
-        Report1 newWindow = new Report1(new JFrame(), true);
-        newWindow.setVisible(true);
-        remove(this);
-    }//GEN-LAST:event_menuReport1ActionPerformed
-
-    private void menuReport2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport2ActionPerformed
-        Report2 newWindow = new Report2(new JFrame(), true);
-        newWindow.setVisible(true);
-        remove(this);
-    }//GEN-LAST:event_menuReport2ActionPerformed
-
-    private void menuReport3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport3ActionPerformed
-        
-    }//GEN-LAST:event_menuReport3ActionPerformed
-
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+    private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
         if (isInteger(inputLowerAge.getText()) != -1 && isInteger(inputUpperAge.getText()) != -1) {
             fillTable();
         }
-    }//GEN-LAST:event_btnAddActionPerformed
+    }//GEN-LAST:event_btnConfirmActionPerformed
 
     private void inputUpperAgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputUpperAgeActionPerformed
         // TODO add your handling code here:
@@ -251,6 +246,22 @@ public class Report3 extends javax.swing.JDialog {
     private void inputLowerAgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputLowerAgeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_inputLowerAgeActionPerformed
+
+    private void menuReport3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport3ActionPerformed
+
+    }//GEN-LAST:event_menuReport3ActionPerformed
+
+    private void menuReport2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport2ActionPerformed
+        Report2 newWindow = new Report2(new JFrame(), true);
+        newWindow.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuReport2ActionPerformed
+
+    private void menuReport1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport1ActionPerformed
+        Report1 newWindow = new Report1(new JFrame(), true);
+        newWindow.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuReport1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -295,7 +306,7 @@ public class Report3 extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnConfirm;
     private javax.swing.JComboBox<String> cbTeams;
     private javax.swing.JTextField inputID;
     private javax.swing.JTextField inputID1;
