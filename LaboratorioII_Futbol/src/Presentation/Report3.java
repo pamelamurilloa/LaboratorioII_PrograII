@@ -1,18 +1,53 @@
 package Presentation;
 
+import Bussiness.PlayerManager;
+import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.JFrame;
+import javax.swing.table.DefaultTableModel;
 
 
 public class Report3 extends javax.swing.JDialog {
 
-    /**
-     * Creates new form Report3
-     */
+    private PlayerManager playerMan = new PlayerManager();
+
     public Report3(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
+        setResizable(false);
+        
+        fillComboBox();
+    }
+    
+    public int isInteger(String numberString) {
+        try {
+            return Integer.parseInt(numberString); 
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 
+
+    public void fillTable() {
+        DefaultTableModel model = (DefaultTableModel) tbData.getModel();
+        model.setRowCount(0);
+        HashMap<Integer, HashMap> reporte = playerMan.report3(Integer.parseInt(inputLowerAge.getText()), Integer.parseInt(inputUpperAge.getText()), cbTeams.getSelectedItem().toString());
+        Object[] fill = new Object[3];
+        for (Object key : reporte.keySet() ) {
+            fill[0] = reporte.get(key).get("Name");
+            fill[1] = reporte.get(key).get("Age");
+            fill[2] = reporte.get(key).get("Debut");
+            model.addRow(fill);
+        }
+    }
+    
+    public void fillComboBox() {
+        ArrayList<String> filling = playerMan.getTeams();
+        for (int item = 0; filling.size() > item; item++) {
+            cbTeams.addItem(filling.get(item).toString());
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -24,8 +59,15 @@ public class Report3 extends javax.swing.JDialog {
 
         jPanel1 = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbData = new javax.swing.JTable();
+        cbTeams = new javax.swing.JComboBox<>();
+        jLabel10 = new javax.swing.JLabel();
+        btnAdd = new javax.swing.JButton();
+        inputUpperAge = new javax.swing.JTextField();
+        inputLowerAge = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -45,23 +87,83 @@ public class Report3 extends javax.swing.JDialog {
         lblTitle.setFont(new java.awt.Font("Hiragino Sans", 1, 36)); // NOI18N
         lblTitle.setForeground(new java.awt.Color(20, 20, 20));
         lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblTitle.setText("Bienvenido al registro de jugadores");
+        lblTitle.setText("Bienvenido al reporte 3");
         jPanel1.add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 900, -1));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jLabel2.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(20, 20, 20));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel2.setText("Edad inicial");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 110, -1, -1));
+
+        jLabel3.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(20, 20, 20));
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel3.setText("Edad final");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 110, 100, -1));
+
+        tbData.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Nombre", "Edad", "Fecha Debut"
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Integer.class, java.lang.String.class
+            };
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 90, 630, -1));
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tbData);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 220, 630, 320));
+
+        cbTeams.setBackground(new java.awt.Color(204, 204, 204));
+        cbTeams.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
+        cbTeams.setForeground(new java.awt.Color(0, 0, 0));
+        jPanel1.add(cbTeams, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 150, 180, 40));
+
+        jLabel10.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(20, 20, 20));
+        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel10.setText("Equipos");
+        jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 160, 90, -1));
+
+        btnAdd.setBackground(new java.awt.Color(0, 153, 153));
+        btnAdd.setFont(new java.awt.Font("Hiragino Sans", 0, 18)); // NOI18N
+        btnAdd.setForeground(new java.awt.Color(0, 0, 0));
+        btnAdd.setText("Confirmar");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 160, 180, 40));
+
+        inputUpperAge.setBackground(new java.awt.Color(204, 204, 204));
+        inputUpperAge.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        inputUpperAge.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inputUpperAgeActionPerformed(evt);
+            }
+        });
+        jPanel1.add(inputUpperAge, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 100, 180, 40));
+
+        inputLowerAge.setBackground(new java.awt.Color(204, 204, 204));
+        inputLowerAge.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        inputLowerAge.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inputLowerAgeActionPerformed(evt);
+            }
+        });
+        jPanel1.add(inputLowerAge, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 100, 180, 40));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 900, 560));
 
@@ -123,16 +225,32 @@ public class Report3 extends javax.swing.JDialog {
     private void menuReport1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport1ActionPerformed
         Report1 newWindow = new Report1(new JFrame(), true);
         newWindow.setVisible(true);
+        remove(this);
     }//GEN-LAST:event_menuReport1ActionPerformed
 
     private void menuReport2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport2ActionPerformed
         Report2 newWindow = new Report2(new JFrame(), true);
         newWindow.setVisible(true);
+        remove(this);
     }//GEN-LAST:event_menuReport2ActionPerformed
 
     private void menuReport3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuReport3ActionPerformed
         
     }//GEN-LAST:event_menuReport3ActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        if (isInteger(inputLowerAge.getText()) != -1 && isInteger(inputUpperAge.getText()) != -1) {
+            fillTable();
+        }
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void inputUpperAgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputUpperAgeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_inputUpperAgeActionPerformed
+
+    private void inputLowerAgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputLowerAgeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_inputLowerAgeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -177,17 +295,26 @@ public class Report3 extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JComboBox<String> cbTeams;
+    private javax.swing.JTextField inputID;
+    private javax.swing.JTextField inputID1;
+    private javax.swing.JTextField inputLowerAge;
+    private javax.swing.JTextField inputUpperAge;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JMenu menuInsert;
     private javax.swing.JMenuItem menuReport1;
     private javax.swing.JMenuItem menuReport2;
     private javax.swing.JMenuItem menuReport3;
+    private javax.swing.JTable tbData;
     // End of variables declaration//GEN-END:variables
 }
