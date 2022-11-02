@@ -77,7 +77,5 @@ public class Player {
     public void setDebutDate(Date debutDate) {
         this.debutDate = debutDate;
     }
-    
-    
 
 }
